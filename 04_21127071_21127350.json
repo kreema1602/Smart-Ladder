@@ -1,0 +1,2796 @@
+[
+    {
+        "id": "71b8c68acafed212",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "399693349193802c",
+        "type": "group",
+        "z": "71b8c68acafed212",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "998b28feec0c2c09",
+            "2be2e59625c1d8a7",
+            "2fd2713f3334d406",
+            "8fbba33099c559f0",
+            "3b82934695a5ddf6",
+            "81301c3a88996552",
+            "d6bd2ac4d5773ded",
+            "09804e263aa833da",
+            "24727a83c557806d",
+            "29c85d06e2377f68",
+            "99aa489b7a67ae8e",
+            "fcbfd8f59a088219",
+            "6f2555b602624f81",
+            "59dbecc8356b1df1",
+            "f6c7c745e1c13d06",
+            "677884d87834b2ef",
+            "aab5f3fca0050491",
+            "cfe91258926605b8",
+            "0f168c4b4f4e47c6"
+        ],
+        "x": 34,
+        "y": -1,
+        "w": 1112,
+        "h": 482
+    },
+    {
+        "id": "f21252d6e3e91f30",
+        "type": "ui_form",
+        "z": "71b8c68acafed212",
+        "name": "Dashboard Login",
+        "label": "",
+        "group": "f03ef7b03794b674",
+        "order": 1,
+        "width": 18,
+        "height": 1,
+        "options": [
+            {
+                "label": "Username",
+                "value": "username",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Pasword",
+                "value": "password",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "username": "",
+            "password": ""
+        },
+        "payload": "",
+        "submit": "Login",
+        "cancel": "",
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": "",
+        "className": "",
+        "x": 410,
+        "y": 580,
+        "wires": [
+            [
+                "bdee4acbab267193",
+                "a8ebcb882f873acd",
+                "e78e6c272df725a8"
+            ]
+        ]
+    },
+    {
+        "id": "bdee4acbab267193",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "msg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "a8ebcb882f873acd",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Account Log",
+        "func": "var accountlog =  flow.get(\"accountlog\") || [] ; \n\naccountlog.push({ accessAt : new Date(), username : msg.payload.username})\n\nflow.set(\"accountlog\", accountlog);\n\nmsg.payload = accountlog;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 500,
+        "wires": [
+            [
+                "24dd4f1d2260c0b5"
+            ]
+        ]
+    },
+    {
+        "id": "24dd4f1d2260c0b5",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "Debug account log",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "e78e6c272df725a8",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Account Verification",
+        "func": "var accounts = flow.get(\"accounts\");\n\nvar username = msg.payload.username;\nvar password = msg.payload.password;\n\nmsg.payload = 1;\n\nfor (const [key, account] of Object.entries(accounts)){\n    if (account.username == username){\n        msg.payload = 2;\n        if (account.password == password) {\n          msg.payload = 0;\n          flow.set(\"mail\", account.mail);\n          break;\n        }\n    }\n}\nif ( msg.payload == 0 ) {\n  var currentsocketid = flow.get(\"clientid\") || undefined;\n  if ( currentsocketid !== undefined && currentsocketid !== msg.socketid ) msg.payload = 3;\n}\n// keep the original socketid from msg.socketid;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 580,
+        "wires": [
+            [
+                "30769f988f854ade",
+                "76f9cc6043d4c1d8"
+            ]
+        ]
+    },
+    {
+        "id": "51d66d0b60317e0e",
+        "type": "ui_ui_control",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "events": "all",
+        "x": 1320,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "30769f988f854ade",
+        "type": "switch",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 4,
+        "x": 850,
+        "y": 580,
+        "wires": [
+            [
+                "1ebc4455e0e2c7ae"
+            ],
+            [
+                "260de3103d8cd5e2"
+            ],
+            [
+                "6ee220389f5d5158"
+            ],
+            [
+                "46f6feb321990a9c"
+            ]
+        ]
+    },
+    {
+        "id": "1ebc4455e0e2c7ae",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "success",
+        "func": "var sessionTimer =  flow.get(\"sessionTimer\") || 0; \nvar currTime = Date.now();\nflow.set(\"sessionTimer\", currTime);\nflow.set(\"clientid\", msg.socketid);\n/* ui-control payload */\nmsg.payload = \"App\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 520,
+        "wires": [
+            [
+                "51d66d0b60317e0e"
+            ]
+        ]
+    },
+    {
+        "id": "260de3103d8cd5e2",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "unknown username",
+        "func": "msg.payload = \"Username Doesn't exist!!!\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 560,
+        "wires": [
+            [
+                "c9400aadbfea1827"
+            ]
+        ]
+    },
+    {
+        "id": "6ee220389f5d5158",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "wrong password",
+        "func": "msg.payload = \"Password isn't correct\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 600,
+        "wires": [
+            [
+                "c9400aadbfea1827"
+            ]
+        ]
+    },
+    {
+        "id": "c9400aadbfea1827",
+        "type": "ui_toast",
+        "z": "71b8c68acafed212",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 1350,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "aefd99e5df761159",
+        "type": "ui_gauge",
+        "z": "71b8c68acafed212",
+        "name": "Gauge: Temperature",
+        "group": "a7cc94dc5b9e26d2",
+        "order": 1,
+        "width": 12,
+        "height": 8,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "18",
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "30",
+        "seg2": "40",
+        "diff": false,
+        "className": "",
+        "x": 800,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "3fe0ca3ce19e1c63",
+        "type": "ui_gauge",
+        "z": "71b8c68acafed212",
+        "name": "Level: Gas",
+        "group": "85942338ae4cb456",
+        "order": 1,
+        "width": 12,
+        "height": 8,
+        "gtype": "wave",
+        "title": "Gas",
+        "label": "ppm",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "4000",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "38",
+        "seg2": "48",
+        "diff": false,
+        "className": "",
+        "x": 770,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "c9eb8f8389fa76e9",
+        "type": "ui_chart",
+        "z": "71b8c68acafed212",
+        "name": "History: Temp",
+        "group": "a7cc94dc5b9e26d2",
+        "order": 2,
+        "width": 12,
+        "height": 8,
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "No data yet",
+        "dot": false,
+        "ymin": "18°C",
+        "ymax": "50°C",
+        "removeOlder": "3",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62e2e",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 780,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "774f60300c0181b2",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Filter : temperature",
+        "func": "const temp = Math.max(msg.payload, 0).toFixed(2);\nmsg.payload = temp;\nflow.set(\"temp\", temp);\nmsg.topic = \"Temperature\"\nreturn msg;  ",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 1060,
+        "wires": [
+            [
+                "c9eb8f8389fa76e9",
+                "aefd99e5df761159",
+                "e28657275dfb5997"
+            ]
+        ]
+    },
+    {
+        "id": "44b9b997d54f0408",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Filter : Gas",
+        "func": "flow.set(\"gas\", msg.payload || 0);\nmsg.topic = \"Gas\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 1200,
+        "wires": [
+            [
+                "3fe0ca3ce19e1c63",
+                "409533c66cb90d2b",
+                "b8b2533697e13454"
+            ]
+        ]
+    },
+    {
+        "id": "11e36445bd8997ba",
+        "type": "ui_button",
+        "z": "71b8c68acafed212",
+        "name": "Ladder up",
+        "group": "ca43189cf3bf2982",
+        "order": 4,
+        "width": 12,
+        "height": 2,
+        "passthru": true,
+        "label": "Go up ladder",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "up",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 1140,
+        "y": 2100,
+        "wires": [
+            [
+                "1b84f076926a87a7",
+                "175417a8e132ab28"
+            ]
+        ]
+    },
+    {
+        "id": "05c7088d2c185eb4",
+        "type": "ui_button",
+        "z": "71b8c68acafed212",
+        "name": "Ladder down",
+        "group": "ca43189cf3bf2982",
+        "order": 5,
+        "width": 12,
+        "height": 2,
+        "passthru": true,
+        "label": "Lower the ladder",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "down",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 1130,
+        "y": 2160,
+        "wires": [
+            [
+                "1b84f076926a87a7",
+                "a201dbdebb9707d1"
+            ]
+        ]
+    },
+    {
+        "id": "59cefeede54910ce",
+        "type": "ui_text",
+        "z": "71b8c68acafed212",
+        "group": "ca43189cf3bf2982",
+        "order": 3,
+        "width": 24,
+        "height": 1,
+        "name": "",
+        "label": "Ladder status:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1600,
+        "y": 2220,
+        "wires": []
+    },
+    {
+        "id": "a919b8fdf64174c4",
+        "type": "mqtt in",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/temperature",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3b9e5648cc9c9585",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 330,
+        "y": 1060,
+        "wires": [
+            [
+                "774f60300c0181b2"
+            ]
+        ]
+    },
+    {
+        "id": "308117d587e6aed0",
+        "type": "mqtt in",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/gas",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3b9e5648cc9c9585",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 350,
+        "y": 1200,
+        "wires": [
+            [
+                "44b9b997d54f0408"
+            ]
+        ]
+    },
+    {
+        "id": "3ae98d465991a7ff",
+        "type": "mqtt out",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/ladder",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "3b9e5648cc9c9585",
+        "x": 1580,
+        "y": 2100,
+        "wires": []
+    },
+    {
+        "id": "1b84f076926a87a7",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "debug ladder state",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1590,
+        "y": 2180,
+        "wires": []
+    },
+    {
+        "id": "9ba5e55208a0542a",
+        "type": "mqtt in",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/ladderState",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3b9e5648cc9c9585",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1110,
+        "y": 2220,
+        "wires": [
+            [
+                "da2f0ce3644e0e04"
+            ]
+        ]
+    },
+    {
+        "id": "76f9cc6043d4c1d8",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "debug account verification",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "998b28feec0c2c09",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Signup form",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 370,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "2be2e59625c1d8a7",
+        "type": "firebase-out",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Add account",
+        "database": "c101cf501443e0bc",
+        "path": "account",
+        "pathType": "str",
+        "priority": 1,
+        "queryType": "push",
+        "x": 830,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "2fd2713f3334d406",
+        "type": "firebase-get",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Get account",
+        "constraint": {},
+        "database": "c101cf501443e0bc",
+        "outputType": "auto",
+        "passThrough": false,
+        "path": "account",
+        "pathType": "str",
+        "useConstraint": false,
+        "x": 330,
+        "y": 100,
+        "wires": [
+            [
+                "8fbba33099c559f0",
+                "81301c3a88996552"
+            ]
+        ]
+    },
+    {
+        "id": "8fbba33099c559f0",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Check debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "3b82934695a5ddf6",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Is username exist?",
+        "func": "const accounts = flow.get(\"accounts\");\nlet res = false;\nfor (const [key, account] of Object.entries(accounts)){\n    if (account.username === msg.payload.username){\n        res = true;\n        break;\n    }\n}\nmsg.test = res;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 260,
+        "wires": [
+            [
+                "09804e263aa833da"
+            ]
+        ]
+    },
+    {
+        "id": "81301c3a88996552",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Set account DB",
+        "func": "flow.set(\"accounts\", msg.payload)\nmsg.payload = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d6bd2ac4d5773ded",
+        "type": "inject",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "2fd2713f3334d406",
+                "677884d87834b2ef"
+            ]
+        ]
+    },
+    {
+        "id": "09804e263aa833da",
+        "type": "switch",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "",
+        "property": "test",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 570,
+        "y": 260,
+        "wires": [
+            [
+                "29c85d06e2377f68"
+            ],
+            [
+                "2be2e59625c1d8a7",
+                "99aa489b7a67ae8e"
+            ]
+        ]
+    },
+    {
+        "id": "24727a83c557806d",
+        "type": "ui_toast",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": false,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 1030,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "29c85d06e2377f68",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Set fail noti",
+        "func": "msg.payload = \"Register Fail\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 220,
+        "wires": [
+            [
+                "24727a83c557806d"
+            ]
+        ]
+    },
+    {
+        "id": "99aa489b7a67ae8e",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Set successful noti",
+        "func": "msg.payload = \"Successful\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 280,
+        "wires": [
+            [
+                "24727a83c557806d"
+            ]
+        ]
+    },
+    {
+        "id": "fcbfd8f59a088219",
+        "type": "ui_button",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Register Button",
+        "group": "f03ef7b03794b674",
+        "order": 2,
+        "width": 18,
+        "height": 1,
+        "passthru": false,
+        "label": "Register",
+        "tooltip": "",
+        "color": "blue",
+        "bgcolor": "transparent",
+        "className": "",
+        "icon": "add",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 180,
+        "y": 440,
+        "wires": [
+            [
+                "59dbecc8356b1df1"
+            ]
+        ]
+    },
+    {
+        "id": "6f2555b602624f81",
+        "type": "ui_ui_control",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "",
+        "events": "all",
+        "x": 580,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "59dbecc8356b1df1",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Open Signup",
+        "func": "msg.payload = {\n    group: {\n        hide: [\"Starting_Login\"],\n        show: [\"Starting_Signup\"]\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 440,
+        "wires": [
+            [
+                "6f2555b602624f81"
+            ]
+        ]
+    },
+    {
+        "id": "f6c7c745e1c13d06",
+        "type": "ui_ui_control",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "",
+        "events": "all",
+        "x": 500,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "677884d87834b2ef",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Open Login",
+        "func": "msg.payload = {\n    group: {\n        show: [\"Starting_Login\"],\n        hide: [\"Starting_Signup\"]\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 180,
+        "wires": [
+            [
+                "f6c7c745e1c13d06"
+            ]
+        ]
+    },
+    {
+        "id": "aab5f3fca0050491",
+        "type": "ui_button",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Login Button",
+        "group": "c3c69a23a940e721",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "You have an account?",
+        "tooltip": "",
+        "color": "blue",
+        "bgcolor": "transparent",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "677884d87834b2ef"
+            ]
+        ]
+    },
+    {
+        "id": "b058154f6b3999d3",
+        "type": "comment",
+        "z": "71b8c68acafed212",
+        "name": "Session Management - 60 minutes",
+        "info": "",
+        "x": 433.49992752075195,
+        "y": 767,
+        "wires": []
+    },
+    {
+        "id": "18f54e33e822ad47",
+        "type": "inject",
+        "z": "71b8c68acafed212",
+        "name": "Timer",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.001",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 371.9999351501465,
+        "y": 855.9999847412109,
+        "wires": [
+            [
+                "a9b451627385c493",
+                "94e662b695608989"
+            ]
+        ]
+    },
+    {
+        "id": "a9b451627385c493",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Detect Session Timer",
+        "func": "var sessionTimer =  flow.get(\"sessionTimer\") || 0; \nvar currTime = Date.now();\nvar SESSION_TIMEOUT = 60*60*1000; //60 minutes\nflow.set(\"session_timeout\", SESSION_TIMEOUT);\n\nif ( sessionTimer === 0 /* Inactive, No user signed in */ ) {\n    msg.payload = 2;\n} else {\n    if ( currTime - sessionTimer > SESSION_TIMEOUT ) {\n      msg.payload = 0;  \n    } else {\n      msg.payload = 1;        \n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 559.9999656677246,
+        "y": 822,
+        "wires": [
+            [
+                "9ed3bc9bc238ecaa"
+            ]
+        ]
+    },
+    {
+        "id": "9ed3bc9bc238ecaa",
+        "type": "switch",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 730,
+        "y": 820,
+        "wires": [
+            [
+                "ea7c4b46c1e7854a"
+            ],
+            [
+                "693bc7bc390fb0b5"
+            ],
+            [
+                "348b5d16f52cf48a"
+            ]
+        ]
+    },
+    {
+        "id": "ea7c4b46c1e7854a",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Time-Out",
+        "func": "/* activate session timer */\nvar sessionTimer =  flow.get(\"sessionTimer\") || 0; \nflow.set(\"sessionTimer\", 0);\n\nmsg.socketid = flow.get(\"clientid\") || undefined;\nmsg.payload = \"Session Expired! Please singin again!\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 913.499927520752,
+        "y": 807,
+        "wires": [
+            [
+                "88579b1f2d8f631f",
+                "f39eb736bc4bf704"
+            ]
+        ]
+    },
+    {
+        "id": "88579b1f2d8f631f",
+        "type": "ui_toast",
+        "z": "71b8c68acafed212",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 1,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "Session Timeout",
+        "name": "Time-Out Dialog",
+        "x": 1293.499927520752,
+        "y": 807,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d4ebc387ddc397d6",
+        "type": "ui_ui_control",
+        "z": "71b8c68acafed212",
+        "name": "Go to Signin Group",
+        "events": "all",
+        "x": 1303.499927520752,
+        "y": 747,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f39eb736bc4bf704",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Sign-In Redirection",
+        "func": "var msg = {};\n\nmsg.socketid = flow.get(\"clientid\") || undefined;\nmsg.payload = \"Starting\";\n\nflow.set(\"clientid\", undefined);\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1083.499927520752,
+        "y": 747,
+        "wires": [
+            [
+                "d4ebc387ddc397d6"
+            ]
+        ]
+    },
+    {
+        "id": "987cb427385e7377",
+        "type": "ui_toast",
+        "z": "71b8c68acafed212",
+        "position": "bottom right",
+        "displayTime": "1",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "Timer",
+        "name": "Display Remaining Time",
+        "x": 903.499927520752,
+        "y": 927,
+        "wires": []
+    },
+    {
+        "id": "94e662b695608989",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Calculating Remaining Time (Debug)",
+        "func": "var sessionTimer =  flow.get(\"sessionTimer\") || 0; \nvar currTime = Date.now();\nvar SESSION_TIMEOUT = flow.get(\"session_timeout\") || 60*60*1000;\nvar remainingSecs = Math.floor((SESSION_TIMEOUT - (currTime - sessionTimer))/1000) + 1;\nif ( sessionTimer == 0 /* Inactive, No user signed in */ ) {\n    return null;\n} else {\n    if ( remainingSecs <= 30 ) msg.payload = \"Remaining : \" + remainingSecs + \" secs\";  \n    else return null;\n}\n\nmsg.socketid = flow.get(\"clientid\") || \"B1234\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 603.499927520752,
+        "y": 927,
+        "wires": [
+            [
+                "987cb427385e7377"
+            ]
+        ]
+    },
+    {
+        "id": "c45f756b647d4348",
+        "type": "ui_ui_control",
+        "z": "71b8c68acafed212",
+        "name": "Stay in Sensor Group",
+        "events": "all",
+        "x": 1313.499927520752,
+        "y": 847,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "693bc7bc390fb0b5",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Sensor/History Goup",
+        "func": "var msg = {};\nflow.set(\"temp\", 0);\nflow.set(\"gas\", 0);\nmsg.socketid = flow.get(\"clientid\") || undefined;\nmsg.payload = \"App\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 953.499927520752,
+        "y": 847,
+        "wires": [
+            [
+                "c45f756b647d4348"
+            ]
+        ]
+    },
+    {
+        "id": "348b5d16f52cf48a",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Signin Goup",
+        "func": "var msg = {};\nmsg.payload = \"Starting\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 923.499927520752,
+        "y": 887,
+        "wires": [
+            [
+                "3d0b429e7b91a20a"
+            ]
+        ]
+    },
+    {
+        "id": "3d0b429e7b91a20a",
+        "type": "ui_ui_control",
+        "z": "71b8c68acafed212",
+        "name": "Go to Signin Group",
+        "events": "all",
+        "x": 1303.499927520752,
+        "y": 887,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "053f9bb567c2086a",
+        "type": "ui_toast",
+        "z": "71b8c68acafed212",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 1,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "System In Use.",
+        "name": "System In-Use Dialog",
+        "x": 1340,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "46f6feb321990a9c",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "System In Use",
+        "func": "msg.payload = \"System is used by other user.\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 640,
+        "wires": [
+            [
+                "053f9bb567c2086a"
+            ]
+        ]
+    },
+    {
+        "id": "5dc7700c72cf9e5b",
+        "type": "ui_button",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "group": "7398104f9c4fd54a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Logout",
+        "tooltip": "",
+        "color": "red",
+        "bgcolor": "transparent",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 683.499927520752,
+        "y": 747,
+        "wires": [
+            [
+                "20802641ae2331f1"
+            ]
+        ]
+    },
+    {
+        "id": "20802641ae2331f1",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Clear session timer",
+        "func": "flow.set(\"sessionTimer\", 0);\nflow.set(\"clientid\", null);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 863.499927520752,
+        "y": 747,
+        "wires": [
+            [
+                "f39eb736bc4bf704"
+            ]
+        ]
+    },
+    {
+        "id": "cfe91258926605b8",
+        "type": "firebase-in",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "",
+        "constraint": {},
+        "database": "c101cf501443e0bc",
+        "listenerType": "child_added",
+        "outputType": "auto",
+        "path": "account",
+        "useConstraint": false,
+        "x": 150,
+        "y": 40,
+        "wires": [
+            [
+                "2fd2713f3334d406"
+            ]
+        ]
+    },
+    {
+        "id": "0f168c4b4f4e47c6",
+        "type": "ui_form",
+        "z": "71b8c68acafed212",
+        "g": "399693349193802c",
+        "name": "Dashboard Register",
+        "label": "",
+        "group": "c3c69a23a940e721",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Username",
+                "value": "username",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Pasword",
+                "value": "password",
+                "type": "password",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Email",
+                "value": "email",
+                "type": "email",
+                "required": false,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "username": "",
+            "password": "",
+            "email": ""
+        },
+        "payload": "",
+        "submit": "Register",
+        "cancel": "",
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": "",
+        "className": "",
+        "x": 160,
+        "y": 300,
+        "wires": [
+            [
+                "3b82934695a5ddf6",
+                "998b28feec0c2c09"
+            ]
+        ]
+    },
+    {
+        "id": "409533c66cb90d2b",
+        "type": "ui_chart",
+        "z": "71b8c68acafed212",
+        "name": "History: Gas",
+        "group": "85942338ae4cb456",
+        "order": 2,
+        "width": 12,
+        "height": 8,
+        "label": "Gas",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "No data yet",
+        "dot": false,
+        "ymin": "0 ppm",
+        "ymax": "4000 ppm",
+        "removeOlder": "3",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62e2e",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 770,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5764b974be35bdb8",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set Fire Message",
+        "func": "if (msg && msg.payload) {\n    return msg;\n}\nreturn null;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 1580,
+        "wires": [
+            [
+                "511cac254ed2eecf"
+            ]
+        ]
+    },
+    {
+        "id": "b8b2533697e13454",
+        "type": "firebase-out",
+        "z": "71b8c68acafed212",
+        "name": "Push Gas",
+        "database": "c101cf501443e0bc",
+        "path": "topic",
+        "pathType": "msg",
+        "priority": 1,
+        "queryType": "push",
+        "x": 760,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "e28657275dfb5997",
+        "type": "firebase-out",
+        "z": "71b8c68acafed212",
+        "name": "Push temperature",
+        "database": "c101cf501443e0bc",
+        "path": "topic",
+        "pathType": "msg",
+        "priority": 1,
+        "queryType": "push",
+        "x": 790,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "1f2af92ec32e69f3",
+        "type": "ui_toast",
+        "z": "71b8c68acafed212",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 810,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "c68fdc5c5c8f785b",
+        "type": "ui_audio",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "group": "d9fb658cd2ab1463",
+        "voice": "Google US English",
+        "always": "",
+        "x": 780,
+        "y": 1520,
+        "wires": []
+    },
+    {
+        "id": "eb16f8c8d48da354",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Check Fire",
+        "func": "msg.topic = \"Notification\";\nmsg.test = msg.payload;\nlet data = [];\ntry {\n    data = msg.payload.split(',');\n\n    msg.data = data;\n    if (data[0] == 1) {\n        const flame = Math.floor(data[1]);\n        const temp = Math.floor(parseFloat(data[2]));\n        const gas = Math.floor(parseInt(data[3]));\n        msg.payload = \"Your house need to check\\n\";\n        if (flame) {\n            msg.payload += \"We found a flame\\n\";\n        }\n        if (temp > 0) {\n            msg.payload += `Your temperature is very high: ${temp}°C\\n `\n        }\n        if (gas > 0) {\n            msg.payload += `Your gas is very high: ${gas}ppm\\n `\n        }\n        msg.ifttt = msg.payload;\n    } else return null;\n    return msg;\n} catch (error) {\n    msg.error = error;\n    return msg;\n};\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 1580,
+        "wires": [
+            [
+                "1f2af92ec32e69f3",
+                "c68fdc5c5c8f785b",
+                "743be21004bb0b64",
+                "5764b974be35bdb8",
+                "da848ba10848d5e9",
+                "467dc6d238623880"
+            ]
+        ]
+    },
+    {
+        "id": "743be21004bb0b64",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "debug fire",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 1440,
+        "wires": []
+    },
+    {
+        "id": "1ca00ba9cdd2c2b8",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "debug telegram msg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 1900,
+        "wires": []
+    },
+    {
+        "id": "5c004fa4126cfce5",
+        "type": "switch",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 5,
+        "x": 830,
+        "y": 1980,
+        "wires": [
+            [
+                "a3c17fd851c5cd1f"
+            ],
+            [
+                "6392d70d93068522"
+            ],
+            [
+                "11e36445bd8997ba",
+                "a18236f0fb24793f"
+            ],
+            [
+                "05c7088d2c185eb4",
+                "a18236f0fb24793f"
+            ],
+            [
+                "0c7c31e09be4ab51"
+            ]
+        ]
+    },
+    {
+        "id": "095782db78cf83e6",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Check receiver",
+        "func": "flow.set(\"chatId\", msg.payload.chatId);\nif (msg.payload.content === \"/sensor\") {\n    msg.payload = 0;\n}\nelse if (msg.payload.content === \"/ladder_state\") {\n    msg.payload = 1;\n}\nelse if (msg.payload.content === \"/ladder_up\") {\n    msg.payload = 2;\n}\nelse if (msg.payload.content === \"/ladder_down\") {\n    msg.payload = 3;\n}\nelse if (msg.payload.content === \"/human\"){\n    msg.payload = 4;\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 1980,
+        "wires": [
+            [
+                "5c004fa4126cfce5"
+            ]
+        ]
+    },
+    {
+        "id": "9482131fb8029fb4",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set sensor message",
+        "func": "// msg.payload = {\n//     chatId: flow.get('chatId'),\n//     type: 'message',\n//     content: `Temperature: ${temp}\\nGas:${gas}`,\n//     fallback: null,\n//     inbound: false\n// }\nmsg.payload = `Temperature: ${msg.temp}°C\\nHumidity: ${msg.humid}%\\nGas: ${msg.gas}ppm`\n    \nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1600,
+        "y": 1920,
+        "wires": [
+            [
+                "e13efb9a731b5e90"
+            ]
+        ]
+    },
+    {
+        "id": "992bae5da6e5077d",
+        "type": "chatbot-telegram-receive",
+        "z": "71b8c68acafed212",
+        "bot": "db1b974c15216be4",
+        "botProduction": "",
+        "x": 450,
+        "y": 1980,
+        "wires": [
+            [
+                "095782db78cf83e6",
+                "1ca00ba9cdd2c2b8"
+            ]
+        ]
+    },
+    {
+        "id": "48e3b9922649ea6b",
+        "type": "chatbot-telegram-send",
+        "z": "71b8c68acafed212",
+        "bot": "db1b974c15216be4",
+        "botProduction": "db1b974c15216be4",
+        "track": false,
+        "passThrough": true,
+        "errorOutput": true,
+        "outputs": 2,
+        "x": 1770,
+        "y": 2020,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "4f19c29b8d774a3f",
+        "type": "chatbot-message",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "message": [],
+        "language": "",
+        "x": 1590,
+        "y": 2020,
+        "wires": [
+            [
+                "48e3b9922649ea6b"
+            ]
+        ]
+    },
+    {
+        "id": "e13efb9a731b5e90",
+        "type": "chatbot-conversation",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "botDevelopment": "db1b974c15216be4",
+        "botProduction": "db1b974c15216be4",
+        "chatId": "6109004531",
+        "userId": "",
+        "transport": "telegram",
+        "x": 1450,
+        "y": 2020,
+        "wires": [
+            [
+                "4f19c29b8d774a3f"
+            ]
+        ]
+    },
+    {
+        "id": "aa0ae456bb62c2d9",
+        "type": "chatbot-telegram-send",
+        "z": "71b8c68acafed212",
+        "bot": "db1b974c15216be4",
+        "botProduction": "db1b974c15216be4",
+        "track": false,
+        "passThrough": true,
+        "errorOutput": true,
+        "outputs": 2,
+        "x": 1350,
+        "y": 1580,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "eed03b4956da8e8f",
+        "type": "chatbot-message",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "message": [],
+        "language": "",
+        "x": 1170,
+        "y": 1580,
+        "wires": [
+            [
+                "aa0ae456bb62c2d9"
+            ]
+        ]
+    },
+    {
+        "id": "511cac254ed2eecf",
+        "type": "chatbot-conversation",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "botDevelopment": "db1b974c15216be4",
+        "botProduction": "db1b974c15216be4",
+        "chatId": "6109004531",
+        "userId": "",
+        "transport": "telegram",
+        "x": 1010,
+        "y": 1580,
+        "wires": [
+            [
+                "eed03b4956da8e8f"
+            ]
+        ]
+    },
+    {
+        "id": "6392d70d93068522",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set ladder state msg",
+        "func": "const ladder = flow.get(\"ladderState\") || \"unknow\";\nmsg.payload = `Ladder: ${ladder}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 1980,
+        "wires": [
+            [
+                "e13efb9a731b5e90"
+            ]
+        ]
+    },
+    {
+        "id": "b782783162dd39da",
+        "type": "ui_text",
+        "z": "71b8c68acafed212",
+        "group": "ca43189cf3bf2982",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Humans:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1380,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "2ef89081a3b9875c",
+        "type": "mqtt in",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/human",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3b9e5648cc9c9585",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1040,
+        "y": 1300,
+        "wires": [
+            [
+                "687af3dbd23e9b9d"
+            ]
+        ]
+    },
+    {
+        "id": "687af3dbd23e9b9d",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set human state",
+        "func": "flow.set(\"human\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 1300,
+        "wires": [
+            [
+                "b782783162dd39da"
+            ]
+        ]
+    },
+    {
+        "id": "0c7c31e09be4ab51",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set human state msg",
+        "func": "const human = flow.get(\"human\") || \"unknow\";\nif (human === \"unknow\") {\n    msg.payload = \"I don't know any human in the room\";\n} else {\n    if (human == \"yes\") {\n        msg.payload = \"There is people in the room\";\n    } else {\n        msg.payload = \"There is no people in the room\";\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 2060,
+        "wires": [
+            [
+                "e13efb9a731b5e90"
+            ]
+        ]
+    },
+    {
+        "id": "a18236f0fb24793f",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set waiting msg",
+        "func": "\nmsg.payload = \"I'm moving the ladder. Please send /ladder_state to get the ladder state.\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 2020,
+        "wires": [
+            [
+                "e13efb9a731b5e90"
+            ]
+        ]
+    },
+    {
+        "id": "467dc6d238623880",
+        "type": "http request",
+        "z": "71b8c68acafed212",
+        "name": "Send IFTTT Notification",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://maker.ifttt.com/trigger/fire/with/key/7dB7X4T7moW8fW55lDtHx?value1={{ifttt}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 830,
+        "y": 1640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8380a27ebc877d03",
+        "type": "e-mail",
+        "z": "71b8c68acafed212",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": false,
+        "name": "",
+        "dname": "",
+        "x": 950,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "da848ba10848d5e9",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set Mail",
+        "func": "const mail = flow.get(\"mail\") || \"nguyenckhanh71@gmail.com\";\nmsg.to = mail;\nmsg.topic = \"House on fire\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 1700,
+        "wires": [
+            [
+                "5ea8d19d7cc048b7",
+                "8380a27ebc877d03"
+            ]
+        ]
+    },
+    {
+        "id": "5ea8d19d7cc048b7",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "debug mail",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 970,
+        "y": 1720,
+        "wires": []
+    },
+    {
+        "id": "5f16a245ece433d8",
+        "type": "ui_gauge",
+        "z": "71b8c68acafed212",
+        "name": "Level: Humid",
+        "group": "d9fb658cd2ab1463",
+        "order": 1,
+        "width": 12,
+        "height": 8,
+        "gtype": "wave",
+        "title": "Humid",
+        "label": "%",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "38",
+        "seg2": "48",
+        "diff": false,
+        "className": "",
+        "x": 770,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "c4cb2bc3125a2190",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Filter: Humid",
+        "func": "msg.payload = parseInt(msg.payload).toFixed(2);\nflow.set(\"humid\", msg.payload || 0);\nmsg.topic = \"Humidity\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 1340,
+        "wires": [
+            [
+                "5f16a245ece433d8",
+                "21ef4c09ebf0591e",
+                "1d72ba82c84ba663"
+            ]
+        ]
+    },
+    {
+        "id": "ab42a177d0dff681",
+        "type": "mqtt in",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/humid",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3b9e5648cc9c9585",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 350,
+        "y": 1340,
+        "wires": [
+            [
+                "c4cb2bc3125a2190"
+            ]
+        ]
+    },
+    {
+        "id": "21ef4c09ebf0591e",
+        "type": "ui_chart",
+        "z": "71b8c68acafed212",
+        "name": "History: Humid",
+        "group": "d9fb658cd2ab1463",
+        "order": 2,
+        "width": 12,
+        "height": 8,
+        "label": "Humid",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "No data yet",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": "3",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62e2e",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 780,
+        "y": 1300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1d72ba82c84ba663",
+        "type": "firebase-out",
+        "z": "71b8c68acafed212",
+        "name": "Push Humid",
+        "database": "c101cf501443e0bc",
+        "path": "topic",
+        "pathType": "msg",
+        "priority": 1,
+        "queryType": "push",
+        "x": 770,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "4ceec170b5352c57",
+        "type": "mqtt in",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/fire",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3b9e5648cc9c9585",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 360,
+        "y": 1580,
+        "wires": [
+            [
+                "eb16f8c8d48da354",
+                "f62522657893e1ec"
+            ]
+        ]
+    },
+    {
+        "id": "9c589edf74b4e4ca",
+        "type": "ui_text",
+        "z": "71b8c68acafed212",
+        "group": "ca43189cf3bf2982",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Flame:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1370,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "90d5a7363d7ae24a",
+        "type": "mqtt in",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/flame",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3b9e5648cc9c9585",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1050,
+        "y": 1360,
+        "wires": [
+            [
+                "7a32e010d21fbc66"
+            ]
+        ]
+    },
+    {
+        "id": "7a32e010d21fbc66",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set flame state",
+        "func": "flow.set(\"flame\", msg.payload);\nif (msg.payload == 1) {\n    msg.payload = \"Yes\";\n} else msg.payload = \"No\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 1360,
+        "wires": [
+            [
+                "9c589edf74b4e4ca"
+            ]
+        ]
+    },
+    {
+        "id": "d8cdeba8c9d1201e",
+        "type": "mqtt out",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/getSensor",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "3b9e5648cc9c9585",
+        "x": 1170,
+        "y": 1860,
+        "wires": []
+    },
+    {
+        "id": "5b38dd90e839a9b2",
+        "type": "mqtt in",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/sensorData",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3b9e5648cc9c9585",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1170,
+        "y": 1920,
+        "wires": [
+            [
+                "0872c2b23631e004"
+            ]
+        ]
+    },
+    {
+        "id": "0872c2b23631e004",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set sensor data",
+        "func": "const data = msg.payload.split(',');\nmsg.temp = Math.floor(data[0]);\nmsg.humid = Math.floor(data[1]);\nmsg.gas = data[2];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1380,
+        "y": 1920,
+        "wires": [
+            [
+                "16887dbf66868591",
+                "9482131fb8029fb4"
+            ]
+        ]
+    },
+    {
+        "id": "16887dbf66868591",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1580,
+        "y": 1880,
+        "wires": []
+    },
+    {
+        "id": "3d65adefb7f1871a",
+        "type": "mqtt out",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/temperature",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "3b9e5648cc9c9585",
+        "x": 840,
+        "y": 2280,
+        "wires": []
+    },
+    {
+        "id": "f69dee8c8c7482db",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set temp",
+        "func": "msg.payload = Math.floor(Math.random()*20 + 18);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 2280,
+        "wires": [
+            [
+                "3d65adefb7f1871a"
+            ]
+        ]
+    },
+    {
+        "id": "ab02b78cb985c054",
+        "type": "inject",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 390,
+        "y": 2280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dfb02ffd1306bd57",
+        "type": "mqtt out",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/humid",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "3b9e5648cc9c9585",
+        "x": 820,
+        "y": 2340,
+        "wires": []
+    },
+    {
+        "id": "700ed24fd704b978",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set humid",
+        "func": "msg.payload = Math.floor(Math.random()*20 + 75);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 2340,
+        "wires": [
+            [
+                "dfb02ffd1306bd57"
+            ]
+        ]
+    },
+    {
+        "id": "654c5c7db49ef178",
+        "type": "inject",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 390,
+        "y": 2340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7387b922cc4c8a36",
+        "type": "mqtt out",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "topic": "071350/gas",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "3b9e5648cc9c9585",
+        "x": 810,
+        "y": 2400,
+        "wires": []
+    },
+    {
+        "id": "040f9db8400a6c6f",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set gas",
+        "func": "msg.payload = Math.floor(Math.random()*300 + 1000);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 2400,
+        "wires": [
+            [
+                "7387b922cc4c8a36"
+            ]
+        ]
+    },
+    {
+        "id": "5bec18eec4a9fce2",
+        "type": "inject",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 390,
+        "y": 2400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "175417a8e132ab28",
+        "type": "delay",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1330,
+        "y": 2100,
+        "wires": [
+            [
+                "3ae98d465991a7ff"
+            ]
+        ]
+    },
+    {
+        "id": "a201dbdebb9707d1",
+        "type": "delay",
+        "z": "71b8c68acafed212",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1330,
+        "y": 2140,
+        "wires": [
+            [
+                "3ae98d465991a7ff"
+            ]
+        ]
+    },
+    {
+        "id": "a3c17fd851c5cd1f",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set sensor message",
+        "func": "msg.payload = '1';\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 1860,
+        "wires": [
+            [
+                "d8cdeba8c9d1201e"
+            ]
+        ]
+    },
+    {
+        "id": "f62522657893e1ec",
+        "type": "debug",
+        "z": "71b8c68acafed212",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 1660,
+        "wires": []
+    },
+    {
+        "id": "da2f0ce3644e0e04",
+        "type": "function",
+        "z": "71b8c68acafed212",
+        "name": "Set Ladder State from MQTT",
+        "func": "flow.set(\"ladderState\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1360,
+        "y": 2220,
+        "wires": [
+            [
+                "59cefeede54910ce"
+            ]
+        ]
+    },
+    {
+        "id": "f03ef7b03794b674",
+        "type": "ui_group",
+        "name": "Login",
+        "tab": "22262c603ea9d6a6",
+        "order": 1,
+        "disp": true,
+        "width": "18",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a7cc94dc5b9e26d2",
+        "type": "ui_group",
+        "name": "Temperature",
+        "tab": "3d34232ce2745171",
+        "order": 5,
+        "disp": true,
+        "width": 24,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "85942338ae4cb456",
+        "type": "ui_group",
+        "name": "Gas",
+        "tab": "3d34232ce2745171",
+        "order": 5,
+        "disp": true,
+        "width": 24,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ca43189cf3bf2982",
+        "type": "ui_group",
+        "name": "Button",
+        "tab": "3d34232ce2745171",
+        "order": 2,
+        "disp": false,
+        "width": 24,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "3b9e5648cc9c9585",
+        "type": "mqtt-broker",
+        "name": "mqtt-dashboard:1883",
+        "broker": "broker.mqtt-dashboard.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "c101cf501443e0bc",
+        "type": "database-config",
+        "name": "Firebase SmartLadder",
+        "authType": "anonymous",
+        "claims": {},
+        "createUser": false,
+        "useClaims": false
+    },
+    {
+        "id": "c3c69a23a940e721",
+        "type": "ui_group",
+        "name": "Signup",
+        "tab": "22262c603ea9d6a6",
+        "order": 2,
+        "disp": true,
+        "width": 18,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "7398104f9c4fd54a",
+        "type": "ui_group",
+        "name": "Logout",
+        "tab": "3d34232ce2745171",
+        "order": 1,
+        "disp": false,
+        "width": 24,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d9fb658cd2ab1463",
+        "type": "ui_group",
+        "name": "Humid",
+        "tab": "3d34232ce2745171",
+        "order": 6,
+        "disp": true,
+        "width": 24,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "db1b974c15216be4",
+        "type": "chatbot-telegram-node",
+        "botname": "smart_ladder_bot",
+        "usernames": "",
+        "polling": "1000",
+        "store": "",
+        "log": "",
+        "debug": false,
+        "skipMediaFiles": false,
+        "webHook": "",
+        "connectMode": "polling",
+        "storeMessages": true,
+        "enableMissionControl": false,
+        "inspectMessages": true,
+        "chatbotId": ""
+    },
+    {
+        "id": "22262c603ea9d6a6",
+        "type": "ui_tab",
+        "name": "Starting",
+        "icon": "account_circle",
+        "order": 1,
+        "disabled": false,
+        "hidden": true
+    },
+    {
+        "id": "3d34232ce2745171",
+        "type": "ui_tab",
+        "name": "App",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]
